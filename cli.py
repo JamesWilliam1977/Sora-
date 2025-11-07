@@ -43,6 +43,13 @@ Examples:
         default="*.mp4",
         help="🔍 File pattern to match (default: *.mp4)"
     )
+    parser.add_argument(
+        "--quiet",
+        action="store_true",
+        default=False,
+        help="Run in quiet mode (suppress tqdm and most logs)."
+    )
+
 
     args = parser.parse_args()
 
@@ -59,7 +66,7 @@ Examples:
         print(f"❌ Error: Input path is not a directory: {input_folder}", file=sys.stderr)
         sys.exit(1)
 
-    return input_folder, output_folder, args.pattern
+    return input_folder, output_folder, args
 
 
 # Classes are now defined inside main() after imports
@@ -67,7 +74,9 @@ Examples:
 
 def main():
     # Validate arguments BEFORE loading heavy dependencies (ffmpeg, torch, etc.)
-    input_folder, output_folder, pattern = validate_args_and_show_help()
+    input_folder, output_folder, args = validate_args_and_show_help()
+
+    pattern = args.pattern
 
     # Only NOW import heavy dependencies after validation passed
     from rich.console import Console
@@ -223,8 +232,8 @@ def main():
                                 progress.update(video_task, advance=prog - last_progress[0])
                                 last_progress[0] = prog
 
-                        # Process the video (quiet=True suppresses internal tqdm bars)
-                        self.sora_wm.run(input_path, output_path, progress_callback, quiet=True)
+                        # Process the video (quiet=True suppresses internal tqdm bars if enabled)
+                        self.sora_wm.run(input_path, output_path, progress_callback, quiet=args.quiet)
 
                         # Ensure video progress reaches 100%
                         if last_progress[0] < 100:
@@ -359,3 +368,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+1
