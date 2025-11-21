@@ -1,7 +1,5 @@
 # SoraWatermarkCleaner
 
-English | [中文](README-zh.md) 
-
 This project provides an elegant way to remove the sora watermark in the sora2 generated videos. 
 
 
