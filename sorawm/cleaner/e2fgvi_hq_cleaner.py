@@ -94,11 +94,12 @@ class E2FGVIHDCleaner:
         # 1GB can process about 5 frames in chunk size
         memory_profiling_results = memory_profiling()
         adapted_chunk_size = int(
-            memory_profiling_results.free_memory / CHUNK_SIZE_PER_GB_VRAM
+            memory_profiling_results.free_memory * CHUNK_SIZE_PER_GB_VRAM
         )
         self.adapted_chunk_size = adapted_chunk_size
         logger.debug(
-            f"Chunk size is set to {self.adapted_chunk_size} based on the free VRAM {memory_profiling_results.free_memory}GB."
+            # keep two digit
+            f"Chunk size is set to {self.adapted_chunk_size} based on the free VRAM {round(memory_profiling_results.free_memory, 2)}GB"
         )
 
     @property
