@@ -52,6 +52,14 @@ Examples:
         default=False,
         help="Run in quiet mode (suppress tqdm and most logs).",
     )
+    parser.add_argument(
+        "-m",
+        "--model",
+        type=str,
+        default="lama",
+        choices=["lama", "e2fgvi_hq"],
+        help="🔧 Model to use for watermark removal (default: lama). Options: lama (fast, may flicker), e2fgvi_hq (time consistent, slower)",
+    )
 
     args = parser.parse_args()
 
@@ -102,6 +110,7 @@ def main():
     from rich.text import Text as RichText
 
     from sorawm.core import SoraWM
+    from sorawm.schemas import CleanerType
 
     # Initialize console after importing rich
     console = Console()
@@ -130,12 +139,12 @@ def main():
         """Batch video processor with progress tracking"""
 
         def __init__(
-            self, input_folder: Path, output_folder: Path, pattern: str = "*.mp4"
+            self, input_folder: Path, output_folder: Path, pattern: str = "*.mp4", cleaner_type: CleanerType = CleanerType.LAMA
         ):
             self.input_folder = input_folder
             self.output_folder = output_folder
             self.pattern = pattern
-            self.sora_wm = SoraWM()
+            self.sora_wm = SoraWM(cleaner_type=cleaner_type)
             self.console = console
 
             # Statistics
@@ -368,7 +377,8 @@ def main():
 
     # Create processor and run
     try:
-        processor = BatchProcessorImpl(input_folder, output_folder, pattern)
+        cleaner_type = CleanerType.LAMA if args.model == "lama" else CleanerType.E2FGVI_HQ
+        processor = BatchProcessorImpl(input_folder, output_folder, pattern, cleaner_type)
         processor.process_batch()
     except KeyboardInterrupt:
         console.print()

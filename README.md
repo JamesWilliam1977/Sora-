@@ -99,20 +99,22 @@ The trained yolo weights will be stored in the `resources` dir as the `best.pt`.
 Use the cli.py for batch processing
 
 ```
-python cli.py [-h] -i INPUT -o OUTPUT [-p PATTERN] [--quiet]
+python cli.py [-h] -i INPUT -o OUTPUT [-p PATTERN] [-m MODEL] [--quiet]
 ```
 
 examples:
 
 ```
 # Process all .mp4 files in input folder
-python batch_process.py -i /path/to/input -o /path/to/output
+python cli.py -i /path/to/input -o /path/to/output
 # Process all .mov files
-python batch_process.py -i /path/to/input -o /path/to/output --pattern "*.mov"
+python cli.py -i /path/to/input -o /path/to/output --pattern "*.mov"
 # Process all video files (mp4, mov, avi)
-python batch_process.py -i /path/to/input -o /path/to/output --pattern "*.{mp4,mov,avi}"
+python cli.py -i /path/to/input -o /path/to/output --pattern "*.{mp4,mov,avi}"
+# Use e2fgvi_hq model for time-consistent results (slower, requires CUDA)
+python cli.py -i /path/to/input -o /path/to/output --model e2fgvi_hq
 # Without displaying the Tqdm bar inside sorawm procrssing.
-python batch_process.py -i /path/to/input -o /path/to/output --quiet
+python cli.py -i /path/to/input -o /path/to/output --quiet
 ```
 
 ## 3. One-Click Portable Version
